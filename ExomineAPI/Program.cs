@@ -1,0 +1,132 @@
+using ExomineAPI.Models.DTOs;
+using ExomineAPI.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Register services for dependency injection
+builder.Services.AddSingleton<GovernorService>();
+builder.Services.AddSingleton<ColonyService>();
+builder.Services.AddSingleton<FacilityService>();
+builder.Services.AddSingleton<MineralService>();
+builder.Services.AddSingleton<FacilityMineralService>();
+builder.Services.AddSingleton<ColonyMineralService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+// Governor endpoints
+app.MapGet("/governors", (GovernorService governorService) => governorService.GetAllGovernors())
+    .WithName("GetAllGovernors")
+    .WithOpenApi();
+
+app.MapGet(
+        "/governors/{id}",
+        (GovernorService governorService, int id) =>
+        {
+            var result = governorService.GetGovernorById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetGovernorById")
+    .WithOpenApi();
+
+// Colony endpoints
+app.MapGet("/colonies", (ColonyService colonyService) => colonyService.GetAllColonies())
+    .WithName("GetAllColonies")
+    .WithOpenApi();
+
+app.MapGet(
+        "/colonies/{id}",
+        (ColonyService colonyService, int id) =>
+        {
+            var result = colonyService.GetColonyById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetColonyById")
+    .WithOpenApi();
+
+// Facility endpoints
+app.MapGet("/facilities", (FacilityService facilityService) => facilityService.GetAllFacilities())
+    .WithName("GetAllFacilities")
+    .WithOpenApi();
+
+app.MapGet(
+        "/facilities/{id}",
+        (FacilityService facilityService, int id) =>
+        {
+            var result = facilityService.GetFacilityById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetFacilityById")
+    .WithOpenApi();
+
+// Mineral endpoints
+app.MapGet("/minerals", (MineralService mineralService) => mineralService.GetAllMinerals())
+    .WithName("GetAllMinerals")
+    .WithOpenApi();
+
+app.MapGet(
+        "/minerals/{id}",
+        (MineralService mineralService, int id) =>
+        {
+            var result = mineralService.GetMineralById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetMineralById")
+    .WithOpenApi();
+
+// Facility Mineral endpoints
+app.MapGet(
+        "/facility-minerals",
+        (FacilityMineralService facilityMineralService) =>
+            facilityMineralService.GetAllFacilityMinerals()
+    )
+    .WithName("GetAllFacilityMinerals")
+    .WithOpenApi();
+
+app.MapGet(
+        "/facility-minerals/{id}",
+        (FacilityMineralService facilityMineralService, int id) =>
+        {
+            var result = facilityMineralService.GetFacilityMineralById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetFacilityMineralById")
+    .WithOpenApi();
+
+// Colony Mineral endpoints
+app.MapGet(
+        "/colony-minerals",
+        (ColonyMineralService colonyMineralService) => colonyMineralService.GetAllColonyMinerals()
+    )
+    .WithName("GetAllColonyMinerals")
+    .WithOpenApi();
+
+app.MapGet(
+        "/colony-minerals/{id}",
+        (ColonyMineralService colonyMineralService, int id) =>
+        {
+            var result = colonyMineralService.GetColonyMineralById(id);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetColonyMineralById")
+    .WithOpenApi();
+
+app.Run();
