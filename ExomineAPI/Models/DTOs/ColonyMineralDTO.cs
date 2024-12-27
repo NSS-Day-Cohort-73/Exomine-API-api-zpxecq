@@ -6,5 +6,9 @@ namespace ExomineAPI.Models.DTOs
         public int ColonyId { get; set; }
         public int MineralId { get; set; }
         public int Quantity { get; set; }
+
+        // Expanded data
+        public ColonyDTO? Colony { get; set; }
+        public MineralDTO? Mineral { get; set; }
     }
 }

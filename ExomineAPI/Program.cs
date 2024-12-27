@@ -43,8 +43,7 @@ app.MapGet(
     .WithName("GetAllGovernors")
     .WithOpenApi();
 
-//Colony Endpoints
-
+// Colony endpoints
 app.MapGet(
         "/colonies/{id}",
         (ColonyService colonyService, int id) =>
@@ -88,9 +87,9 @@ app.MapGet(
     .WithName("GetMineralById")
     .WithOpenApi();
 
-// Facility Mineral endpoints
+// FacilityMineral endpoints
 app.MapGet(
-        "/facility-minerals",
+        "/facilityMinerals",
         (FacilityMineralService facilityMineralService) =>
             facilityMineralService.GetAllFacilityMinerals()
     )
@@ -98,7 +97,7 @@ app.MapGet(
     .WithOpenApi();
 
 app.MapGet(
-        "/facility-minerals/{id}",
+        "/facilityMinerals/{id}",
         (FacilityMineralService facilityMineralService, int id) =>
         {
             var result = facilityMineralService.GetFacilityMineralById(id);
@@ -109,7 +108,7 @@ app.MapGet(
     .WithOpenApi();
 
 app.MapPut(
-        "/facility-minerals/{id}",
+        "/facilityMinerals/{id}",
         (
             FacilityMineralService facilityMineralService,
             int id,
@@ -137,17 +136,30 @@ app.MapPut(
     .WithName("UpdateFacilityMineral")
     .WithOpenApi();
 
-// Colony Mineral endpoints
-// Colony Mineral endpoints
+// ColonyMineral endpoints
 app.MapGet(
-        "/colony-minerals",
-        (ColonyMineralService colonyMineralService) => colonyMineralService.GetAllColonyMinerals()
+        "/colonyMinerals",
+        (ColonyMineralService colonyMineralService, string? _expand, int? colonyId) =>
+        {
+            // Determine which expansions are requested
+            var expandColony = _expand?.Contains("colony") == true;
+            var expandMineral = _expand?.Contains("mineral") == true;
+
+            // Get the data from the service
+            var colonyMinerals = colonyMineralService.GetAllColonyMinerals(
+                expandColony,
+                expandMineral,
+                colonyId
+            );
+
+            return Results.Ok(colonyMinerals);
+        }
     )
     .WithName("GetAllColonyMinerals")
     .WithOpenApi();
 
 app.MapGet(
-        "/colony-minerals/{id}",
+        "/colonyMinerals/{id}",
         (ColonyMineralService colonyMineralService, int id) =>
         {
             var result = colonyMineralService.GetColonyMineralById(id);
@@ -158,7 +170,7 @@ app.MapGet(
     .WithOpenApi();
 
 app.MapPut(
-        "/colony-minerals/{id}",
+        "/colonyMinerals/{id}",
         (
             ColonyMineralService colonyMineralService,
             int id,
@@ -184,7 +196,7 @@ app.MapPut(
     .WithOpenApi();
 
 app.MapPost(
-        "/colony-minerals",
+        "/colonyMinerals",
         (ColonyMineralService colonyMineralService, ColonyMineralDTO newColonyMineral) =>
         {
             if (newColonyMineral == null)
@@ -194,7 +206,7 @@ app.MapPost(
 
             var createdMineral = colonyMineralService.CreateColonyMineral(newColonyMineral);
 
-            return Results.Created($"/colony-minerals/{createdMineral.Id}", createdMineral);
+            return Results.Created($"/colonyMinerals/{createdMineral.Id}", createdMineral);
         }
     )
     .WithName("CreateColonyMineral")
