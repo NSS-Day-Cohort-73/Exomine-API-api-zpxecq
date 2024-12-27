@@ -90,21 +90,23 @@ app.MapGet(
 // FacilityMineral endpoints
 app.MapGet(
         "/facilityMinerals",
-        (FacilityMineralService facilityMineralService) =>
-            facilityMineralService.GetAllFacilityMinerals()
-    )
-    .WithName("GetAllFacilityMinerals")
-    .WithOpenApi();
-
-app.MapGet(
-        "/facilityMinerals/{id}",
-        (FacilityMineralService facilityMineralService, int id) =>
+        (FacilityMineralService facilityMineralService, string? _expand, int? facilityId) =>
         {
-            var result = facilityMineralService.GetFacilityMineralById(id);
-            return result != null ? Results.Ok(result) : Results.NotFound();
+            // Determine which expansions are requested
+            var expandFacility = _expand?.Contains("facility") == true;
+            var expandMineral = _expand?.Contains("mineral") == true;
+
+            // Get the data from the service
+            var facilityMinerals = facilityMineralService.GetAllFacilityMinerals(
+                expandFacility,
+                expandMineral,
+                facilityId
+            );
+
+            return Results.Ok(facilityMinerals);
         }
     )
-    .WithName("GetFacilityMineralById")
+    .WithName("GetAllFacilityMinerals")
     .WithOpenApi();
 
 app.MapPut(
