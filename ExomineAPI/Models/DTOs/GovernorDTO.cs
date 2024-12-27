@@ -6,5 +6,6 @@ namespace ExomineAPI.Models.DTOs
         public string? Name { get; set; }
         public int ColonyId { get; set; }
         public bool Active { get; set; }
+        public ColonyDTO? Colony { get; set; }
     }
 }
