@@ -8,14 +8,62 @@ namespace ExomineAPI.Services
 {
     public class FacilityMineralService
     {
-        public IEnumerable<FacilityMineralDTO> GetAllFacilityMinerals()
+        public IEnumerable<FacilityMineralDTO> GetAllFacilityMinerals(
+            bool expandFacility = false,
+            bool expandMineral = false,
+            int? facilityId = null
+        )
         {
-            return FacilityMineralData.FacilityMinerals.Select(fm => new FacilityMineralDTO
+            var query = FacilityMineralData.FacilityMinerals.AsEnumerable();
+
+            // Filter by facilityId if provided
+            if (facilityId.HasValue)
             {
-                Id = fm.Id,
-                FacilityId = fm.FacilityId,
-                MineralId = fm.MineralId,
-                Quantity = fm.Quantity,
+                query = query.Where(fm => fm.FacilityId == facilityId.Value);
+            }
+
+            return query.Select(fm =>
+            {
+                var facilityMineralDto = new FacilityMineralDTO
+                {
+                    Id = fm.Id,
+                    FacilityId = fm.FacilityId,
+                    MineralId = fm.MineralId,
+                    Quantity = fm.Quantity,
+                };
+
+                // Expand Facility if requested
+                if (expandFacility)
+                {
+                    var facility = FacilityData.Facilities.FirstOrDefault(f =>
+                        f.Id == fm.FacilityId
+                    );
+                    if (facility != null)
+                    {
+                        facilityMineralDto.Facility = new FacilityDTO
+                        {
+                            Id = facility.Id,
+                            Name = facility.Name,
+                            Active = facility.Active,
+                        };
+                    }
+                }
+
+                // Expand Mineral if requested
+                if (expandMineral)
+                {
+                    var mineral = MineralData.Minerals.FirstOrDefault(m => m.Id == fm.MineralId);
+                    if (mineral != null)
+                    {
+                        facilityMineralDto.Mineral = new MineralDTO
+                        {
+                            Id = mineral.Id,
+                            Name = mineral.Name,
+                        };
+                    }
+                }
+
+                return facilityMineralDto;
             });
         }
 

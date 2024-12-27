@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 // Register services for dependency injection
 builder.Services.AddSingleton<GovernorService>();
@@ -22,6 +23,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(options =>
+    {
+        options.AllowAnyOrigin();
+        options.AllowAnyMethod();
+        options.AllowAnyHeader();
+    });
 }
 
 app.UseHttpsRedirection();
@@ -41,6 +48,21 @@ app.MapGet(
         }
     )
     .WithName("GetAllGovernors")
+    .WithOpenApi();
+app.MapGet(
+        "/governors/{id}",
+        (GovernorService governorService, int id) =>
+        {
+            // Get the governor by ID with colony always expanded
+            var governor = governorService.GetGovernorById(id);
+
+            // Return the governor or a 404 if not found
+            return governor != null
+                ? Results.Ok(governor)
+                : Results.NotFound($"Governor with id {id} not found.");
+        }
+    )
+    .WithName("GetGovernorById")
     .WithOpenApi();
 
 // Colony endpoints
@@ -90,21 +112,23 @@ app.MapGet(
 // FacilityMineral endpoints
 app.MapGet(
         "/facilityMinerals",
-        (FacilityMineralService facilityMineralService) =>
-            facilityMineralService.GetAllFacilityMinerals()
-    )
-    .WithName("GetAllFacilityMinerals")
-    .WithOpenApi();
-
-app.MapGet(
-        "/facilityMinerals/{id}",
-        (FacilityMineralService facilityMineralService, int id) =>
+        (FacilityMineralService facilityMineralService, string? _expand, int? facilityId) =>
         {
-            var result = facilityMineralService.GetFacilityMineralById(id);
-            return result != null ? Results.Ok(result) : Results.NotFound();
+            // Determine which expansions are requested
+            var expandFacility = _expand?.Contains("facility") == true;
+            var expandMineral = _expand?.Contains("mineral") == true;
+
+            // Get the data from the service
+            var facilityMinerals = facilityMineralService.GetAllFacilityMinerals(
+                expandFacility,
+                expandMineral,
+                facilityId
+            );
+
+            return Results.Ok(facilityMinerals);
         }
     )
-    .WithName("GetFacilityMineralById")
+    .WithName("GetAllFacilityMinerals")
     .WithOpenApi();
 
 app.MapPut(
