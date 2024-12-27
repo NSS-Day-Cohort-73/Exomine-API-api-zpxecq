@@ -110,6 +110,35 @@ app.MapGet(
     .WithName("GetFacilityMineralById")
     .WithOpenApi();
 
+app.MapPut(
+        "/facility-minerals/{id}",
+        (
+            FacilityMineralService facilityMineralService,
+            int id,
+            FacilityMineralDTO updatedFacilityMineral
+        ) =>
+        {
+            if (updatedFacilityMineral == null || updatedFacilityMineral.Id != id)
+            {
+                return Results.BadRequest("Invalid data.");
+            }
+
+            var updatedMineral = facilityMineralService.UpdateFacilityMineral(
+                id,
+                updatedFacilityMineral
+            );
+
+            if (updatedMineral == null)
+            {
+                return Results.NotFound($"Facility mineral with id {id} not found.");
+            }
+
+            return Results.Ok(updatedMineral); // Return the updated object
+        }
+    )
+    .WithName("UpdateFacilityMineral")
+    .WithOpenApi();
+
 // Colony Mineral endpoints
 app.MapGet(
         "/colony-minerals",
