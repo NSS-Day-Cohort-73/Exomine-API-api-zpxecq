@@ -8,14 +8,59 @@ namespace ExomineAPI.Services
 {
     public class ColonyMineralService
     {
-        public IEnumerable<ColonyMineralDTO> GetAllColonyMinerals()
+        public IEnumerable<ColonyMineralDTO> GetAllColonyMinerals(
+            bool expandColony = false,
+            bool expandMineral = false,
+            int? colonyId = null
+        )
         {
-            return ColonyMineralData.ColonyMinerals.Select(cm => new ColonyMineralDTO
+            var query = ColonyMineralData.ColonyMinerals.AsEnumerable();
+
+            // Filter by colonyId if provided
+            if (colonyId.HasValue)
             {
-                Id = cm.Id,
-                ColonyId = cm.ColonyId,
-                MineralId = cm.MineralId,
-                Quantity = cm.Quantity,
+                query = query.Where(cm => cm.ColonyId == colonyId.Value);
+            }
+
+            return query.Select(cm =>
+            {
+                var colonyMineralDto = new ColonyMineralDTO
+                {
+                    Id = cm.Id,
+                    ColonyId = cm.ColonyId,
+                    MineralId = cm.MineralId,
+                    Quantity = cm.Quantity,
+                };
+
+                // Expand Colony if requested
+                if (expandColony)
+                {
+                    var colony = ColonyData.Colonies.FirstOrDefault(c => c.Id == cm.ColonyId);
+                    if (colony != null)
+                    {
+                        colonyMineralDto.Colony = new ColonyDTO
+                        {
+                            Id = colony.Id,
+                            Name = colony.Name,
+                        };
+                    }
+                }
+
+                // Expand Mineral if requested
+                if (expandMineral)
+                {
+                    var mineral = MineralData.Minerals.FirstOrDefault(m => m.Id == cm.MineralId);
+                    if (mineral != null)
+                    {
+                        colonyMineralDto.Mineral = new MineralDTO
+                        {
+                            Id = mineral.Id,
+                            Name = mineral.Name,
+                        };
+                    }
+                }
+
+                return colonyMineralDto;
             });
         }
 
