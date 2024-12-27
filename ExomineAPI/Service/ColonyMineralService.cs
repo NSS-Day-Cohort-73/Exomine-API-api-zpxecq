@@ -55,5 +55,30 @@ namespace ExomineAPI.Services
                 Quantity = colonyMineral.Quantity,
             };
         }
+
+        public ColonyMineralDTO CreateColonyMineral(ColonyMineralDTO newColonyMineral)
+        {
+            //Generate a new ID
+            var newId = ColonyMineralData.ColonyMinerals.Max(cm => cm.Id) + 1;
+            //Create the new ColonyMineral
+            var colonyMineral = new ColonyMineral
+            {
+                Id = newId,
+                ColonyId = newColonyMineral.ColonyId,
+                MineralId = newColonyMineral.MineralId,
+                Quantity = newColonyMineral.Quantity,
+            };
+            //Update the database
+            ColonyMineralData.ColonyMinerals.Add(colonyMineral);
+
+            //Return the new DTO
+            return new ColonyMineralDTO
+            {
+                Id = colonyMineral.Id,
+                ColonyId = colonyMineral.ColonyId,
+                MineralId = colonyMineral.MineralId,
+                Quantity = colonyMineral.Quantity,
+            };
+        }
     }
 }
