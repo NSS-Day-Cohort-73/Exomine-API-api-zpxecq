@@ -185,4 +185,21 @@ app.MapPut(
     .WithName("UpdateColonyMineral")
     .WithOpenApi();
 
+app.MapPost(
+        "/colony-minerals",
+        (ColonyMineralService colonyMineralService, ColonyMineralDTO newColonyMineral) =>
+        {
+            if (newColonyMineral == null)
+            {
+                return Results.BadRequest("Invalid data.");
+            }
+
+            var createdMineral = colonyMineralService.CreateColonyMineral(newColonyMineral);
+
+            return Results.Created($"/colony-minerals/{createdMineral.Id}", createdMineral);
+        }
+    )
+    .WithName("CreateColonyMineral")
+    .WithOpenApi();
+
 app.Run();
