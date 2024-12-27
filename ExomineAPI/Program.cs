@@ -27,25 +27,23 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Governor endpoints
-app.MapGet("/governors", (GovernorService governorService) => governorService.GetAllGovernors())
+app.MapGet(
+        "/governors",
+        (GovernorService governorService, string? _expand) =>
+        {
+            // Check if the _expand query parameter is set to "colony"
+            var includeColony = _expand == "colony";
+
+            // Pass the includeColony flag to the service
+            var governors = governorService.GetAllGovernors(includeColony);
+
+            return Results.Ok(governors);
+        }
+    )
     .WithName("GetAllGovernors")
     .WithOpenApi();
 
-app.MapGet(
-        "/governors/{id}",
-        (GovernorService governorService, int id) =>
-        {
-            var result = governorService.GetGovernorById(id);
-            return result != null ? Results.Ok(result) : Results.NotFound();
-        }
-    )
-    .WithName("GetGovernorById")
-    .WithOpenApi();
-
-// Colony endpoints
-app.MapGet("/colonies", (ColonyService colonyService) => colonyService.GetAllColonies())
-    .WithName("GetAllColonies")
-    .WithOpenApi();
+//Colony Endpoints
 
 app.MapGet(
         "/colonies/{id}",
