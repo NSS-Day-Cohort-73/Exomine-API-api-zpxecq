@@ -144,6 +144,7 @@ app.MapGet(
     .WithOpenApi();
 
 // FacilityMineral endpoints
+
 app.MapGet(
         "/facilityMinerals",
         (FacilityMineralService facilityMineralService, string? _expand, int? facilityId) =>
@@ -163,6 +164,23 @@ app.MapGet(
         }
     )
     .WithName("GetAllFacilityMinerals")
+    .WithOpenApi();
+
+app.MapGet(
+        "/facilityMinerals/{id}",
+        (FacilityMineralService facilityMineralService, int id) =>
+        {
+            var facilityMineral = facilityMineralService.GetFacilityMineralById(id);
+
+            if (facilityMineral == null)
+            {
+                return Results.NotFound($"Facility mineral with id {id} not found.");
+            }
+
+            return Results.Ok(facilityMineral);
+        }
+    )
+    .WithName("GetFacilityMineralById")
     .WithOpenApi();
 
 app.MapPut(
@@ -192,6 +210,23 @@ app.MapPut(
         }
     )
     .WithName("UpdateFacilityMineral")
+    .WithOpenApi();
+
+app.MapPost(
+        "/facilityMinerals",
+        (FacilityMineralService facilityMineralService, FacilityMineralDTO newFacilityMineral) =>
+        {
+            if (newFacilityMineral == null)
+            {
+                return Results.BadRequest("Invalid data.");
+            }
+
+            var createdMineral = facilityMineralService.CreateFacilityMineral(newFacilityMineral);
+
+            return Results.Created($"/facilityMinerals/{createdMineral.Id}", createdMineral);
+        }
+    )
+    .WithName("CreateFacilityMineral")
     .WithOpenApi();
 
 // ColonyMineral endpoints
@@ -268,6 +303,33 @@ app.MapPost(
         }
     )
     .WithName("CreateColonyMineral")
+    .WithOpenApi();
+
+//Purchase Endpoint
+app.MapPost(
+        "/purchase",
+        (
+            ColonyMineralService colonyMineralService,
+            FacilityMineralService facilityMineralService,
+            int governorId,
+            int facilityId,
+            int mineralId
+        ) =>
+        {
+            try
+            {
+                // Perform the purchase logic
+                var result = colonyMineralService.HandlePurchase(governorId, facilityId, mineralId);
+
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+        }
+    )
+    .WithName("PurchaseMineral")
     .WithOpenApi();
 
 app.Run();

@@ -125,5 +125,55 @@ namespace ExomineAPI.Services
                 Quantity = colonyMineral.Quantity,
             };
         }
+
+        public string HandlePurchase(int governorId, int facilityId, int mineralId)
+        {
+            // Validate input
+            var facilityMineral = FacilityMineralData.FacilityMinerals.FirstOrDefault(fm =>
+                fm.FacilityId == facilityId && fm.MineralId == mineralId
+            );
+
+            if (facilityMineral == null || facilityMineral.Quantity < 1)
+            {
+                throw new Exception("Insufficient stock for this mineral.");
+            }
+
+            // Decrement FacilityMineral quantity
+            facilityMineral.Quantity--;
+
+            // Find or create ColonyMineral
+            var governor = GovernorData.Governors.FirstOrDefault(g => g.Id == governorId);
+            if (governor == null)
+                throw new Exception("Governor not found.");
+
+            var colony = ColonyData.Colonies.FirstOrDefault(c => c.Id == governor.ColonyId);
+            if (colony == null)
+                throw new Exception("Colony not found.");
+
+            var colonyMineral = ColonyMineralData.ColonyMinerals.FirstOrDefault(cm =>
+                cm.ColonyId == colony.Id && cm.MineralId == mineralId
+            );
+
+            if (colonyMineral != null)
+            {
+                // Increment ColonyMineral quantity
+                colonyMineral.Quantity++;
+            }
+            else
+            {
+                // Create new ColonyMineral
+                var newId = ColonyMineralData.ColonyMinerals.Max(cm => cm.Id) + 1;
+                colonyMineral = new ColonyMineral
+                {
+                    Id = newId,
+                    ColonyId = colony.Id,
+                    MineralId = mineralId,
+                    Quantity = 1,
+                };
+                ColonyMineralData.ColonyMinerals.Add(colonyMineral);
+            }
+
+            return "Purchase successful.";
+        }
     }
 }

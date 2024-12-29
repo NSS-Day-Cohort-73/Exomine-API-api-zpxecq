@@ -110,5 +110,32 @@ namespace ExomineAPI.Services
                 Quantity = facilityMineral.Quantity,
             };
         }
+
+        public FacilityMineralDTO CreateFacilityMineral(FacilityMineralDTO newFacilityMineral)
+        {
+            // Generate a new ID
+            var newId = FacilityMineralData.FacilityMinerals.Max(fm => fm.Id) + 1;
+
+            // Create the new FacilityMineral
+            var facilityMineral = new FacilityMineral
+            {
+                Id = newId,
+                FacilityId = newFacilityMineral.FacilityId,
+                MineralId = newFacilityMineral.MineralId,
+                Quantity = newFacilityMineral.Quantity,
+            };
+
+            // Update the database
+            FacilityMineralData.FacilityMinerals.Add(facilityMineral);
+
+            // Return the new DTO
+            return new FacilityMineralDTO
+            {
+                Id = facilityMineral.Id,
+                FacilityId = facilityMineral.FacilityId,
+                MineralId = facilityMineral.MineralId,
+                Quantity = facilityMineral.Quantity,
+            };
+        }
     }
 }

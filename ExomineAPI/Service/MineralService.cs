@@ -47,13 +47,18 @@ namespace ExomineAPI.Services
                 colMin.ColonyId == colony.Id
             );
 
-            // Find matching minerals
-            var minerals = MineralData.Minerals.Where(min =>
-                colonyMinerals.Any(colMin => colMin.MineralId == min.Id)
-            );
+            // Join minerals with colony minerals to include quantity
+            var mineralsWithQuantities =
+                from colMin in colonyMinerals
+                join min in MineralData.Minerals on colMin.MineralId equals min.Id
+                select new MineralDTO
+                {
+                    Id = min.Id,
+                    Name = min.Name,
+                    Quantity = colMin.Quantity, // Populate Quantity from the join table
+                };
 
-            // Project to DTOs
-            return minerals.Select(min => new MineralDTO { Id = min.Id, Name = min.Name });
+            return mineralsWithQuantities;
         }
 
         public IEnumerable<MineralDTO> GetMineralsByFacilityId(int facilityId)
@@ -63,13 +68,18 @@ namespace ExomineAPI.Services
                 fm.FacilityId == facilityId
             );
 
-            // Find matching minerals based on FacilityMinerals
-            var minerals = MineralData.Minerals.Where(min =>
-                facilityMinerals.Any(fm => fm.MineralId == min.Id)
-            );
+            // Join minerals with facility minerals to include quantity
+            var mineralsWithQuantities =
+                from fm in facilityMinerals
+                join min in MineralData.Minerals on fm.MineralId equals min.Id
+                select new MineralDTO
+                {
+                    Id = min.Id,
+                    Name = min.Name,
+                    Quantity = fm.Quantity, // Populate Quantity from the join table
+                };
 
-            // Map the minerals to MineralDTO
-            return minerals.Select(min => new MineralDTO { Id = min.Id, Name = min.Name });
+            return mineralsWithQuantities;
         }
     }
 }
