@@ -109,6 +109,40 @@ app.MapGet(
     .WithName("GetMineralById")
     .WithOpenApi();
 
+app.MapGet(
+        "/minerals/governor/{governorId}",
+        (MineralService mineralService, int governorId) =>
+        {
+            var result = mineralService.GetMineralsByGovernorId(governorId);
+            return result != null && result.Any() ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetMineralsByGovernorId")
+    .WithOpenApi();
+
+app.MapGet(
+        "/minerals/facility/{facilityId}",
+        (MineralService mineralService, int facilityId) =>
+        {
+            var result = mineralService.GetMineralsByFacilityId(facilityId);
+            return result != null && result.Any() ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetMineralsByFacilityId")
+    .WithOpenApi();
+
+// Colony endpoints
+app.MapGet(
+        "/colonies/governor/{governorId}",
+        (ColonyService colonyService, int governorId) =>
+        {
+            var result = colonyService.GetColonyByGovernorId(governorId);
+            return result != null ? Results.Ok(result) : Results.NotFound();
+        }
+    )
+    .WithName("GetColonyByGovernorId")
+    .WithOpenApi();
+
 // FacilityMineral endpoints
 app.MapGet(
         "/facilityMinerals",
