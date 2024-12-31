@@ -25,5 +25,25 @@ namespace ExomineAPI.Services
 
             return new ColonyDTO { Id = colony.Id, Name = colony.Name };
         }
+
+        public ColonyDTO? GetColonyByGovernorId(int governorId)
+        {
+            // Find the governor by ID
+            var governor = GovernorData.Governors.FirstOrDefault(gov => gov.Id == governorId);
+            if (governor == null)
+            {
+                return null; // No governor found, return null
+            }
+
+            // Find the colony by the governor's ColonyId
+            var colony = ColonyData.Colonies.FirstOrDefault(col => col.Id == governor.ColonyId);
+            if (colony == null)
+            {
+                return null; // No colony found, return null
+            }
+
+            // Map the colony to ColonyDTO
+            return new ColonyDTO { Id = colony.Id, Name = colony.Name };
+        }
     }
 }
