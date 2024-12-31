@@ -141,21 +141,21 @@ function App() {
           onFacilityChange={(id) =>
             setSelectedFacility(facilities.find((f) => f.id === parseInt(id)))
           }
-          className="col-md-5 m-2"
+          className="col-md-5 m-2 box-container"
         />
 
         {/* Colony Minerals Display */}
         <ColonyMineralsDisplay
           colony={colony}
           colonyMinerals={colonyMinerals}
-          className="col-md-5 m-2"
+          className="col-md-5 m-2 box-container"
         />
 
         {/* Facility Minerals Display */}
         <FacilityMineralsDisplay
           facilityMinerals={facilityMinerals}
           onMineralSelect={handleMineralSelect}
-          className="col-md-5 m-2"
+          className="col-md-5 m-2 box-container"
         />
 
         {/* Space Cart */}
@@ -166,7 +166,7 @@ function App() {
             (mineral) => mineral.id === selectedMineralId
           )}
           onPurchase={handlePurchase}
-          className="col-md-5 m-2"
+          className="col-md-5 m-2 box-container"
         />
       </div>
     </div>

@@ -19,7 +19,12 @@ const SpaceCart = ({
       {selectedMineral ? (
         <div>
           <p>{selectedMineral.name}: 1 ton</p>
-          <button onClick={handlePurchaseClick}>Purchase Mineral</button>
+          <button
+            className="btn btn-outline-primary mb-2"
+            onClick={handlePurchaseClick}
+          >
+            Purchase Mineral
+          </button>
         </div>
       ) : (
         <p>No mineral selected.</p>

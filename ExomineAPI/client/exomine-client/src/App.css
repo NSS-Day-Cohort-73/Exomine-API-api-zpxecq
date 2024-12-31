@@ -1,8 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Nova+Square&display=swap");
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+body {
+  font-family: "Nova Square", sans-serif !important;
+  font-size: 1.5em !important;
 }
 
 ul {
@@ -43,4 +50,11 @@ ul {
 
 .read-the-docs {
   color: #888;
+}
+
+.box-container {
+  background-color: #f6f6f6;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px #aaaaaa;
 }

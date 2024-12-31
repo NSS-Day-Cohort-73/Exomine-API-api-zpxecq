@@ -10,8 +10,11 @@ const GovernorAndFacilitySelectorContainer = ({
   return (
     <div className={className}>
       <div>
-        <label htmlFor="governor-select">Select Governor:</label>
+        <label htmlFor="governor-select">
+          <h3>Select Governor:</h3>
+        </label>
         <select
+          className="form-select form-select-lg mb-3 btn btn-outline-primary text-start"
           id="governor-select"
           value={selectedGovernor?.id || ""}
           onChange={(e) => onGovernorChange(e.target.value)}
@@ -26,8 +29,11 @@ const GovernorAndFacilitySelectorContainer = ({
       </div>
 
       <div className="mt-3">
-        <label htmlFor="facility-select">Select Facility:</label>
+        <label htmlFor="facility-select">
+          <h3>Select Facility:</h3>
+        </label>
         <select
+          className="form-select form-select-lg mb-3 btn btn-outline-primary text-start"
           id="facility-select"
           value={selectedFacility?.id || ""}
           onChange={(e) => onFacilityChange(e.target.value)}
