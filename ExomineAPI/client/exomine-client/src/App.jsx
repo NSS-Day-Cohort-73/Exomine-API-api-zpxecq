@@ -128,6 +128,7 @@ function App() {
 
   return (
     <div className="container">
+      <div className="row text-primary"><h1>Exomine</h1></div>
       <div className="row">
         {/* Governor and Facility Selector */}
         <GovernorAndFacilitySelectorContainer
@@ -141,21 +142,21 @@ function App() {
           onFacilityChange={(id) =>
             setSelectedFacility(facilities.find((f) => f.id === parseInt(id)))
           }
-          className="col-md-5 m-2 box-container"
+          className="col-xs-11 col-md-5 m-2 box-container"
         />
 
         {/* Colony Minerals Display */}
         <ColonyMineralsDisplay
           colony={colony}
           colonyMinerals={colonyMinerals}
-          className="col-md-5 m-2 box-container"
+          className="col-xs-11 col-md-5 m-2 box-container"
         />
 
         {/* Facility Minerals Display */}
         <FacilityMineralsDisplay
           facilityMinerals={facilityMinerals}
           onMineralSelect={handleMineralSelect}
-          className="col-md-5 m-2 box-container"
+          className="col-xs-11 col-md-5 m-2 box-container"
         />
 
         {/* Space Cart */}
@@ -166,7 +167,7 @@ function App() {
             (mineral) => mineral.id === selectedMineralId
           )}
           onPurchase={handlePurchase}
-          className="col-md-5 m-2 box-container"
+          className="col-xs-11 col-md-5 m-2 box-container"
         />
       </div>
     </div>

@@ -1,5 +1,3 @@
-
-
 const FacilityMineralsDisplay = ({
   selectedFacility,
   facilityMinerals,
@@ -17,10 +15,11 @@ const FacilityMineralsDisplay = ({
 
       {/* Display the minerals list with radios */}
       {facilityMinerals.length > 0 ? (
-        <ul>
+        <ul className="text-start text-bg-dark border border-0 rounded">
           {facilityMinerals.map(({ id, quantity, name }) => (
             <li key={id}>
               <input
+                className="m-2"
                 type="radio"
                 name="facilityMineral"
                 value={id}

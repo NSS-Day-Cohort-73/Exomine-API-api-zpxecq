@@ -6,7 +6,7 @@ const ColonyMineralsDisplay = ({ colony, colonyMinerals, className }) => {
 
       {/* Display the minerals list */}
       {colonyMinerals.length > 0 ? (
-        <ul>
+        <ul className="border border-0 rounded text-bg-dark">
           {colonyMinerals.map((mineral) => (
             <li key={mineral.id}>
               {mineral.name}: {mineral.quantity} tons
